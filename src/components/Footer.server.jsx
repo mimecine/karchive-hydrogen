@@ -1,6 +1,6 @@
-import {Link} from '@shopify/hydrogen';
+import { Link } from "@shopify/hydrogen";
 
-export default function Footer({collection, product}) {
+export default function Footer({ collection, product, page }) {
   return (
     <footer role="contentinfo">
       <div className="relative bg-white border-t border-b border-black border-opacity-5">
@@ -60,7 +60,7 @@ export default function Footer({collection, product}) {
             <h2 className="text-md font-medium uppercase mb-4">Templates</h2>
             <ul className="mt-8 space-y-4">
               <li className="flex items-center text-sm font-medium text-gray-600 hover:text-gray-900">
-                <Link to="/home">Home</Link>
+                <Link to="/pages/${page?.handle}">Psage</Link>
               </li>
               <li className="flex items-center text-sm font-medium text-gray-600 hover:text-gray-900">
                 <Link to={`/products/${product?.handle}`}>Product</Link>

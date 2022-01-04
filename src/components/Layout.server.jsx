@@ -3,29 +3,30 @@ import {
   useShopQuery,
   flattenConnection,
   LocalizationProvider,
-} from '@shopify/hydrogen';
-import gql from 'graphql-tag';
+} from "@shopify/hydrogen";
+import gql from "graphql-tag";
 
-import Header from './Header.client';
-import Footer from './Footer.server';
-import {useCartUI} from './CartUIProvider.client';
-import Cart from './Cart.client';
+import Header from "./Header.client";
+import Footer from "./Footer.server";
+import { useCartUI } from "./CartUIProvider.client";
+import Cart from "./Cart.client";
 
-export default function Layout({children, hero}) {
-  const {data} = useShopQuery({
+export default function Layout({ children, hero }) {
+  const { data } = useShopQuery({
     query: QUERY,
     variables: {
-      numCollections: 3,
+      numCollections: 10,
     },
     cache: {
       maxAge: 60,
       staleWhileRevalidate: 60 * 10,
     },
   });
-  const {isCartOpen, closeCart} = useCartUI();
+  const { isCartOpen, closeCart } = useCartUI();
   const collections = data ? flattenConnection(data.collections) : null;
   const products = data ? flattenConnection(data.products) : null;
-  const storeName = data ? data.shop.name : '';
+  const pages = data ? flattenConnection(data.pages) : null;
+  const storeName = data ? data.shop.name : "";
 
   return (
     <LocalizationProvider>
@@ -43,7 +44,7 @@ export default function Layout({children, hero}) {
           {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */}
           <div
             className={`z-50 fixed top-0 bottom-0 left-0 right-0 bg-black transition-opacity duration-400 ${
-              isCartOpen ? 'opacity-20' : 'opacity-0 pointer-events-none'
+              isCartOpen ? "opacity-20" : "opacity-0 pointer-events-none"
             }`}
             onClick={isCartOpen ? closeCart : null}
           />
@@ -55,7 +56,11 @@ export default function Layout({children, hero}) {
             {children}
           </div>
         </main>
-        <Footer collection={collections[0]} product={products[0]} />
+        <Footer
+          collection={collections[0]}
+          product={products[0]}
+          page={pages[0]}
+        />
       </div>
     </LocalizationProvider>
   );
@@ -80,6 +85,13 @@ const QUERY = gql`
       }
     }
     products(first: 1) {
+      edges {
+        node {
+          handle
+        }
+      }
+    }
+    pages(first: 1) {
       edges {
         node {
           handle

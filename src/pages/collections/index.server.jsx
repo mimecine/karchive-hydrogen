@@ -9,8 +9,7 @@ import gql from "graphql-tag";
 
 import Layout from "../../components/Layout.server";
 import FeaturedCollection from "../../components/FeaturedCollection";
-import ProductCard from "../../components/ProductCard";
-import Welcome from "../../components/Welcome.server";
+import ProductThumb from "../../components/ProductThumb";
 
 export default function Index({ country = { isoCode: "US" } }) {
   const { data } = useShopQuery({
@@ -21,12 +20,6 @@ export default function Index({ country = { isoCode: "US" } }) {
   });
 
   const collections = data ? flattenConnection(data.collections) : [];
-  const featuredProductsCollection = collections[0];
-  const featuredProducts = featuredProductsCollection
-    ? flattenConnection(featuredProductsCollection.products)
-    : null;
-  const featuredCollection =
-    collections && collections.length > 1 ? collections[1] : collections[0];
 
   return (
     <Layout>
@@ -34,7 +27,7 @@ export default function Index({ country = { isoCode: "US" } }) {
         <div className="bg-white p-12 shadow-xl rounded-xl mb-10">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-8">
             {collections.map((collection) => (
-              <div className="">
+              <div className="" key={collection.id}>
                 {/* <Link
                   to={`/collections/${collection.handle}`}
                   className="text-blue-600 hover:underline"
@@ -43,11 +36,8 @@ export default function Index({ country = { isoCode: "US" } }) {
                 </Link> */}
                 <div className="grid grid-cols-3 gap-2">
                   {flattenConnection(collection.products).map((product) => (
-                    <div className="border aspect-1">
-                      {product.title}
-                      {/* <div key={product.id}>
-                        <ProductCard product={product} />
-                      </div> */}
+                    <div key={product.id}>
+                      <ProductThumb product={product} />
                     </div>
                   ))}
                 </div>
